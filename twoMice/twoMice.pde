@@ -39,11 +39,9 @@ void draw() {
   println(frameRate);
   
   if(sending)
-    sendRandomPixels();
-  for (int i=0; i< 50;i++)
-    senScreenPart();
+    for (int i=0; i<50; i++)
+      senScreenPart();
 }
-
 
 void mouseMoved() {
 }
@@ -53,27 +51,11 @@ void keyPressed() {
     sending = !sending;
     println(sending ? "Sending" : "Not sending");
   }
-  if (key == 's') {
-    sendRandomPixels();
-  }
-}
-
-
-
-void sendRandomPixels() {
-  OscMessage msg = new OscMessage("/pixels");
-  loadPixels();
-  for (int i=0; i < 150; i++) {
-    int loc = (int) random(img.pixels.length);
-    msg.add(loc);
-    msg.add(pixels[loc]);
-  }
-  oscP5.send(msg, theOther);
 }
 
 int pixelsSend=0;
 void senScreenPart() {
-  if (pixelsSend>= width*height-1)
+  if (pixelsSend >= width*height-1)
     return; 
   loadPixels();
   OscMessage msg = new OscMessage("/pixels");
