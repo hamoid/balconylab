@@ -11,20 +11,16 @@ void setup() {
   noStroke();
   size(800, 600);
   frameRate(25);
+  
+  PImage i = loadImage(IMG_PATH);
+  image(i, 0, 0,width,height);
+  
   oscP5 = new OscP5(this, MY_PORT);
   theOther = new NetAddress(OTHER_IP, OTHER_PORT);
 
   OscMessage msg = new OscMessage("/hello");
   msg.add("http://piratepad.net/pdmGz0lg9b");
   oscP5.send(msg, theOther);
-/*
-loadPixels();
-for(int i=0; i < pixels.length;i++)
-pixels[i] = color((int) random(255),(int) random(255),(int) random(255));
-updatePixels();
-*/
-PImage img = loadImage("C:/Users/Ramin/Pictures/2 fretchen.jpg");
-image(img,0,0,width,height);
 }
 
 void draw() {
@@ -38,7 +34,10 @@ void draw() {
     line(mouseX, mouseY, pmouseX, pmouseY);
   }
   println(frameRate);
+  sendRandomPixels();
 }
+
+
 void mouseMoved() {
 }
 void keyPressed() {
@@ -81,7 +80,7 @@ void oscEvent(OscMessage msg) {
     for(int i=0; i<150; i++) {
       int which = msg.get(i*2).intValue();
       int val = msg.get(i*2+1).intValue();
-      pixels[which] = val;
+      pixels[which] = val;      
     }
     updatePixels();
   }
