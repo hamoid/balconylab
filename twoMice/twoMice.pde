@@ -7,6 +7,8 @@ OscP5 oscP5;
 NetAddress theOther;
 
 PImage img;
+boolean sending = false;
+
 
 void setup() {
   background(255);
@@ -26,8 +28,6 @@ void setup() {
 }
 
 void draw() {
-  for (int i=0; i< 50;i++)
-    senScreenPart();
   if (mousePressed) {
     OscMessage msg = new OscMessage("/notatest");
     msg.add(mouseX);
@@ -37,7 +37,11 @@ void draw() {
     line(mouseX, mouseY, pmouseX, pmouseY);
   }
   println(frameRate);
-  sendRandomPixels();
+  
+  if(sending)
+    sendRandomPixels();
+  for (int i=0; i< 50;i++)
+    senScreenPart();
 }
 
 
@@ -46,7 +50,8 @@ void mouseMoved() {
 
 void keyPressed() {
   if (key == ' ') {
-    background(255);
+    sending = !sending;
+    println(sending ? "Sending" : "Not sending");
   }
   if (key == 's') {
     sendRandomPixels();
