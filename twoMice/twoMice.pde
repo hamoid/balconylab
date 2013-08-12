@@ -35,12 +35,15 @@ void keyPressed() {
   if (key == ' ') {
     background(255);
   }
+  if (key == 's') {
+    sendRandomPixels();
+  }
 }
 
 void sendRandomPixels() {
   OscMessage msg = new OscMessage("/pixels");
   loadPixels();
-  for (int i=0; i < 150;i++) {
+  for (int i=0; i < 150; i++) {
     int loc = (int) random(pixels.length);
     msg.add(loc);
     msg.add(pixels[loc]);
@@ -64,9 +67,9 @@ void oscEvent(OscMessage msg) {
   }
   if (msg.checkAddrPattern("/pixels")) {
     loadPixels();
-    for(int i=0; i<150; i+=2) {
-      int which = msg.get(i).intValue();
-      int val = msg.get(i+1).intValue();
+    for(int i=0; i<150; i++) {
+      int which = msg.get(i*2).intValue();
+      int val = msg.get(i*2+1).intValue();
       pixels[which] = val;
     }
     updatePixels();
