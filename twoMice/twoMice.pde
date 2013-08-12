@@ -36,6 +36,18 @@ void keyPressed() {
     background(255);
   }
 }
+
+void sendRandomPixels() {
+  OscMessage msg = new OscMessage("/pixels");
+  loadPixels();
+  for (int i=0; i < 150;i++) {
+    int loc = (int) random(pixels.length);
+    msg.add(loc);
+    msg.add(pixels[loc]);
+  }
+  oscP5.send(msg, theOther);
+}
+
 void oscEvent(OscMessage msg) {
   if (msg.checkAddrPattern("/hello")) {
     String a = msg.get(0).stringValue();
