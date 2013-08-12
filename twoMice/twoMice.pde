@@ -6,15 +6,17 @@ PVector lastPoint;
 OscP5 oscP5;
 NetAddress theOther;
 
+PImage img;
+
 void setup() {
   background(255);
   noStroke();
   size(800, 600);
   frameRate(25);
-  
-  PImage i = loadImage(IMG_PATH);
-  image(i, 0, 0,width,height);
-  
+
+  img= loadImage(IMG_PATH);
+  image(img, 0, 0, width, height);
+
   oscP5 = new OscP5(this, MY_PORT);
   theOther = new NetAddress(OTHER_IP, OTHER_PORT);
 
@@ -24,7 +26,8 @@ void setup() {
 }
 
 void draw() {
-  sendRandomPixels();
+  for (int i=0; i< 50;i++)
+    senScreenPart();
   if (mousePressed) {
     OscMessage msg = new OscMessage("/notatest");
     msg.add(mouseX);
@@ -40,6 +43,7 @@ void draw() {
 
 void mouseMoved() {
 }
+
 void keyPressed() {
   if (key == ' ') {
     background(255);
@@ -49,15 +53,32 @@ void keyPressed() {
   }
 }
 
+
+
 void sendRandomPixels() {
   OscMessage msg = new OscMessage("/pixels");
   loadPixels();
   for (int i=0; i < 150; i++) {
-    int loc = (int) random(pixels.length);
+    int loc = (int) random(img.pixels.length);
     msg.add(loc);
     msg.add(pixels[loc]);
   }
   oscP5.send(msg, theOther);
+}
+
+int pixelsSend=0;
+void senScreenPart() {
+  if (pixelsSend>= width*height-1)
+    return; 
+  loadPixels();
+  OscMessage msg = new OscMessage("/pixels");
+  for (int i=0; i < 150; i++) {
+    int loc = pixelsSend++;//(int) random(img.pixels.length);
+    msg.add(loc);
+    msg.add(pixels[loc]);
+  }
+  oscP5.send(msg, theOther);
+  println(pixelsSend+"/"+pixels.length);
 }
 
 void oscEvent(OscMessage msg) {
@@ -75,12 +96,12 @@ void oscEvent(OscMessage msg) {
     lastPoint = new PVector(x, y);
   }
   if (msg.checkAddrPattern("/pixels")) {
-//      println(msg);
+    //      println(msg);
     loadPixels();
-    for(int i=0; i<150; i++) {
+    for (int i=0; i<150; i++) {
       int which = msg.get(i*2).intValue();
       int val = msg.get(i*2+1).intValue();
-      pixels[which] = val;      
+      pixels[which] = val;
     }
     updatePixels();
   }
