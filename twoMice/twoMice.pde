@@ -6,6 +6,8 @@ PVector lastPoint;
 OscP5 oscP5;
 NetAddress theOther;
 
+boolean sending = false;
+
 void setup() {
   background(255);
   noStroke();
@@ -34,7 +36,9 @@ void draw() {
     line(mouseX, mouseY, pmouseX, pmouseY);
   }
   println(frameRate);
-  sendRandomPixels();
+  
+  if(sending)
+    sendRandomPixels();
 }
 
 
@@ -42,7 +46,8 @@ void mouseMoved() {
 }
 void keyPressed() {
   if (key == ' ') {
-    background(255);
+    sending = !sending;
+    println(sending ? "Sending" : "Not sending");
   }
   if (key == 's') {
     sendRandomPixels();
