@@ -11,6 +11,10 @@ void setup() {
   noStroke();
   size(800, 600);
   frameRate(25);
+  
+  PImage i = loadImage(IMG_PATH);
+  image(i, 0, 0);
+  
   oscP5 = new OscP5(this, MY_PORT);
   theOther = new NetAddress(OTHER_IP, OTHER_PORT);
 
@@ -28,6 +32,7 @@ void draw() {
     stroke(#27FF72);
     line(mouseX, mouseY, pmouseX, pmouseY);
   }
+  sendRandomPixels();
 }
 void mouseMoved() {
 }
@@ -70,7 +75,7 @@ void oscEvent(OscMessage msg) {
     for(int i=0; i<150; i++) {
       int which = msg.get(i*2).intValue();
       int val = msg.get(i*2+1).intValue();
-      pixels[which] = val;
+      pixels[which] = val;      
     }
     updatePixels();
   }
