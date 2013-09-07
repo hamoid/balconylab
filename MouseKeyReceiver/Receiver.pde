@@ -20,8 +20,8 @@ class Receiver {
     keyData = new KeyData[ARRAY_LENGTH];
   }
   
-  void setMouseData(float x, float y, boolean pressed) {
-    mouseData[mouseDataWritePointer] = new MouseData(x, y, pressed);
+  void setMouseData(int usrid, float x, float y, boolean pressed) {
+    mouseData[mouseDataWritePointer] = new MouseData(usrid, x, y, pressed);
     mouseDataWritePointer = (mouseDataWritePointer + 1) % ARRAY_LENGTH;
   }
   MouseData getMouseData() {
@@ -35,8 +35,8 @@ class Receiver {
     return result;
   }
   
-  void setKeyData(char k) {
-    keyData[keyDataWritePointer] = new KeyData(k);
+  void setKeyData(int usrid, char k) {
+    keyData[keyDataWritePointer] = new KeyData(usrid, k);
     keyDataWritePointer = (keyDataWritePointer + 1) % ARRAY_LENGTH;
   }
   KeyData getKeyData() {
@@ -53,22 +53,26 @@ class Receiver {
   // when we receive data from others
   void oscEvent(OscMessage msg) {
     if (msg.checkAddrPattern("/mouseMoved")) {
-      float x = msg.get(0).floatValue();  
-      float y = msg.get(1).floatValue();
-      boolean p = msg.get(2).intValue() == 1;
-      rec.setMouseData(x, y, p);
+      int usrid = msg.get(0).intValue();
+      float x = msg.get(1).floatValue();  
+      float y = msg.get(2).floatValue();
+      boolean p = msg.get(3).intValue() == 1;
+      rec.setMouseData(usrid, x, y, p);
     } else if (msg.checkAddrPattern("/keyPressed")) {
-      char k = msg.get(0).charValue();
-      rec.setKeyData(k);
+      int usrid = msg.get(0).intValue();
+      char k = msg.get(1).charValue();
+      rec.setKeyData(usrid, k);
     }
   }
 }
 // simple object to store received mouse event details
 class MouseData {
+  int usrid;
   float x;
   float y;
   boolean pressed;
-  MouseData(float x, float y, boolean pressed) {
+  MouseData(int usrid, float x, float y, boolean pressed) {
+    this.usrid = usrid;
     this.x = x;
     this.y = y;
     this.pressed = pressed;
@@ -76,8 +80,10 @@ class MouseData {
 }
 // simple object to store received key press event details
 class KeyData {
+  int usrid;
   char key;
-  KeyData(char key) {
+  KeyData(int usrid, char key) {
+    this.usrid = usrid;
     this.key = key;
   }
 }

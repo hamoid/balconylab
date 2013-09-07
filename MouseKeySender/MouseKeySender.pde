@@ -12,6 +12,7 @@ import netP5.*;
 // NOTE: Ask the receiver for his IP address and PORT!
 
 String OTHER_IP = "127.0.0.1";
+int MY_ID = 0;
 int OTHER_PORT = 12000;
 
 
@@ -22,6 +23,8 @@ void setup() {
   size(600, 600);
   frameRate(25);
   background(0);
+
+  MY_ID = findMyID();
   
   // myself
   oscP5 = new OscP5(this, OTHER_PORT+1);
@@ -42,6 +45,7 @@ void mouseDragged() {
 }
 void sendMouse() {
   OscMessage msg = new OscMessage("/mouseMoved");
+  msg.add(MY_ID);
   msg.add(mouseX/float(width));
   msg.add(mouseY/float(height));
   msg.add(mousePressed ? 1 : 0);
@@ -49,6 +53,7 @@ void sendMouse() {
 }
 void keyPressed() {
   OscMessage msg = new OscMessage("/keyPressed");
+  msg.add(MY_ID);
   msg.add(key);
   oscP5.send(msg, theOther);
   
