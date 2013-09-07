@@ -5,7 +5,7 @@ import java.util.Map;
 class Receiver {
   OscP5 oscP5;
   
-  HashMap<Integer,UserData> userData = new HashMap<Integer,UserData>();
+  HashMap<Integer,UserData> userData;
 
   int ARRAY_LENGTH = 2000;
 
@@ -21,9 +21,16 @@ class Receiver {
     oscP5 = new OscP5(this, port);
     mouseData = new MouseData[ARRAY_LENGTH];
     keyData = new KeyData[ARRAY_LENGTH];
+    userData = new HashMap<Integer,UserData>();
   }
   
   void setMouseData(int usrid, float x, float y, boolean pressed) {
+    UserData u = userData.get(usrid);
+    if(u == null) {
+      userData.put(usrid, new UserData(usrid, x, y, pressed, ' '));
+    } else {
+      u.setMouse(x, y, pressed);
+    }
     mouseData[mouseDataWritePointer] = new MouseData(usrid, x, y, pressed);
     mouseDataWritePointer = (mouseDataWritePointer + 1) % ARRAY_LENGTH;
   }
@@ -39,6 +46,12 @@ class Receiver {
   }
   
   void setKeyData(int usrid, char k) {
+    UserData u = userData.get(usrid);
+    if(u == null) {
+      userData.put(usrid, new UserData(usrid, 0, 0, false, k));
+    } else {
+      u.setKey(k);
+    }
     keyData[keyDataWritePointer] = new KeyData(usrid, k);
     keyDataWritePointer = (keyDataWritePointer + 1) % ARRAY_LENGTH;
   }
@@ -91,15 +104,23 @@ class KeyData {
   }
 }
 class UserData {
+  int id;
   float x;
   float y;
   boolean pressed;
   char key;
-  UserData() {
-    x = 0;
-    y = 0;
-    pressed = false;
-    key = ' ';
+  UserData(int id, float x, float y, boolean pressed, char key) {
+    this.id = id;
+    this.setMouse(x, y, pressed);
+    this.setKey(key);
+  }
+  void setMouse(float x, float y, boolean pressed) {
+    this.x = x;
+    this.y = y;
+    this.pressed = pressed;
+  }
+  void setKey(char key) {
+    this.key = key;
   }
 }
 
