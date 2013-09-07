@@ -8,6 +8,8 @@ import netP5.*;
 
 // NOTE: Ask the receiver for his IP address and PORT!
 
+// This program simulates several users sending data to the Receiver
+
 String OTHER_IP = "127.0.0.1";
 int OTHER_PORT = 12000;
 
