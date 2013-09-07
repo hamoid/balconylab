@@ -8,7 +8,7 @@ import netP5.*;
 
 // NOTE: Ask the receiver for his IP address and PORT!
 
-String OTHER_IP = "127.0.0.1";
+String OTHER_IP = "192.168.2.123";
 int MY_ID = 0;
 int OTHER_PORT = 12000;
 

@@ -8,7 +8,7 @@ Receiver rec;
 //  (_)\_)(____)\___)(____)(____)  \/  (____)(_)\_)
 
 void setup() {
-  size(600, 600);
+  size(displayWidth, displayHeight);
   background(0);
   colorMode(HSB);
   noFill();
