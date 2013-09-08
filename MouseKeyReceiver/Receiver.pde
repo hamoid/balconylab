@@ -2,10 +2,12 @@ import oscP5.*;
 import netP5.*;
 import java.util.Map;
 
+Receiver receiver_reference;
+
 class Receiver {
   OscP5 oscP5;
-  
-  HashMap<Integer,UserData> userData = new HashMap<Integer,UserData>();
+
+  HashMap<Integer, UserData> userData = new HashMap<Integer, UserData>();
 
   int ARRAY_LENGTH = 2000;
 
@@ -21,8 +23,12 @@ class Receiver {
     oscP5 = new OscP5(this, port);
     mouseData = new MouseData[ARRAY_LENGTH];
     keyData = new KeyData[ARRAY_LENGTH];
+    if (receiver_reference == null) 
+      receiver_reference = this;
+    else println("Receiver already created");
   }
-  
+
+
   void setMouseData(int usrid, float x, float y, boolean pressed) {
     mouseData[mouseDataWritePointer] = new MouseData(usrid, x, y, pressed);
     mouseDataWritePointer = (mouseDataWritePointer + 1) % ARRAY_LENGTH;
@@ -37,7 +43,7 @@ class Receiver {
     }
     return result;
   }
-  
+
   void setKeyData(int usrid, char k) {
     keyData[keyDataWritePointer] = new KeyData(usrid, k);
     keyDataWritePointer = (keyDataWritePointer + 1) % ARRAY_LENGTH;
@@ -60,11 +66,12 @@ class Receiver {
       float x = msg.get(1).floatValue();  
       float y = msg.get(2).floatValue();
       boolean p = msg.get(3).intValue() == 1;
-      rec.setMouseData(usrid, x, y, p);
-    } else if (msg.checkAddrPattern("/keyPressed")) {
+      receiver_reference.setMouseData(usrid, x, y, p);
+    } 
+    else if (msg.checkAddrPattern("/keyPressed")) {
       int usrid = msg.get(0).intValue();
       char k = msg.get(1).charValue();
-      rec.setKeyData(usrid, k);
+      receiver_reference.setKeyData(usrid, k);
     }
   }
 }
